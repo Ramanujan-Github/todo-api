@@ -1,0 +1,52 @@
+@base = http://localhost:7806
+@token = {{login.response.body.token}}
+
+### Register
+POST {{base}}/auth/register
+Content-Type: application/json
+
+{ "username": "ram", "password": "vram1502" }
+
+### Register same user again (expect 409)
+POST {{base}}/auth/register
+Content-Type: application/json
+
+{ "username": "test2", "password": "secret123" }
+
+### Login
+# @name login
+POST {{base}}/auth/login
+Content-Type: application/json
+
+{ "username": "test2", "password": "secret123" }
+
+### Wrong password (expect 401)
+POST {{base}}/auth/login
+Content-Type: application/json
+
+{ "username": "ram", "password": "wrong" }
+
+### No token (expect 401)
+GET {{base}}/todos
+
+### Create a todo
+POST {{base}}/todos
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{ "task": "Learn Backend" }
+
+### Get my todos
+GET {{base}}/todos
+Authorization: Bearer {{token}}
+
+### Mark todo 1 done
+PUT {{base}}/todos/2
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{ "done": true }
+
+### Delete todo 1 (expect 204)
+DELETE {{base}}/todos/1
+Authorization: Bearer {{token}}
